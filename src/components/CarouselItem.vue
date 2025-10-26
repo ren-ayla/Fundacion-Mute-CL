@@ -1,6 +1,8 @@
     <script setup>
     import { ref } from 'vue';
-    import { RouterLink } from 'vue-router';
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
 
     // 1. Array con la información de los slides
     const slides = ref([
@@ -46,6 +48,58 @@
     return new URL(`../assets/img/views/${name}`, import.meta.url).href;
     }
 
+    function getOffset() {
+  const screenWidth = window.innerWidth;
+  const md = 768; // Inicio Tablet
+  const lg = 1400; // Inicio Desktop
+  
+  let offset;
+  if (screenWidth < md) {
+    // AJUSTA ESTE NÚMERO (ej: 70)
+    offset = 120; // Altura del Navbar en móvil
+  } else if (screenWidth < lg) {
+    // AJUSTA ESTE NÚMERO (ej: 90)
+    offset = 130; // Altura del Navbar en tablet
+  } else {
+    // Tu valor de escritorio
+    offset = 120; 
+  }
+  return offset;
+}
+
+// FUNCIÓN 2: El manejador de scroll
+function smoothScroll(link) {
+  
+  // Caso A: Es un link a otra vista (ej: /blog)
+  if (!link.startsWith('/#')) {
+    router.push(link);
+    return;
+  }
+
+  // Caso B: Es un link de ancla (ej: /#contacto)
+  const hash = link.substring(1); // -> '#contacto'
+  const el = document.querySelector(hash);
+
+if (el) {
+    // 1. Calculamos el offset (ahora SÍ usará 70, 95, 120)
+    const offset = getOffset();
+    
+    // 2. Calculamos la posición final
+    const elTop = el.getBoundingClientRect().top + window.scrollY - offset;
+    
+    // 3. Hacemos el scroll manual con JS
+    window.scrollTo({
+      top: elTop,
+      behavior: 'smooth'
+    });
+    
+    // 4. ¡LA LÍNEA MODIFICADA!
+    // Esto actualiza la URL (ej: /#contacto) silenciosamente,
+    // sin llamar al router y sin anular nuestro scroll.
+    history.pushState(null, '', link); // <-- REEMPLAZA router.push({ hash: hash });
+  }
+}
+
     </script>
 
     <template>
@@ -78,9 +132,13 @@
                             <hr>
                             <h1 class="carousel-title" v-html="slide.titleHtml"></h1>
                             <hr>
-                            <RouterLink :to="slide.link">
-                                <button class="button-carousel">{{ slide.buttonText }}</button>
-                            </RouterLink>
+                                <a 
+                                    class="button-carousel"
+                                    @click="smoothScroll(slide.link)"
+                                    role="button"
+                                >
+                                    {{ slide.buttonText }}
+                                </a>
                         </div>
                     </div>
                 </div>
@@ -102,11 +160,6 @@
     :global(#mainCarousel .carousel-item) {
         transition: transform 0.6s ease-in-out;
     }
-    /*FIX PARA QUE BOTÓN QUEDE POR ENCIMA DEL CAROUSEL */
-    .button-carousel {
-        position: relative;
-        z-index: 10;
-    }
 
     /* ---- ESTILOS GENERALES DEL CARRUSEL ---- */
     .carousel-item {
@@ -123,6 +176,8 @@
     }
 
     .button-carousel{
+        position: relative;
+        z-index: 10;
         background-color: #AE85CE;
         border: none;
         color: white;
@@ -135,6 +190,7 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.251);
         cursor: pointer;
         transition: background-color 0.3s ease;
+        text-shadow: none;
     }
     .button-carousel:hover {
         background-color: #9CADFC;
