@@ -23,12 +23,12 @@ const getImageUrl = (name) => {
 </script>
 
 <template>
-<footer class="bg-dark text-white pt-5 pb-4">
+<footer class="bg-dark text-white pt-5 pb-4 page-section" id="contacto">
     <div class="container text-center text-md-start">
 
     <div class="text-center mb-5">
         <h5 class="text-uppercase fw-bold">Encuéntranos en nuestros canales digitales</h5>
-        <a :href="contactInfo.find(c => c.icon.includes('instagram')).href" target="_blank" class="instagram-icon-link" id="contacto">
+        <a :href="contactInfo.find(c => c.icon.includes('instagram')).href" target="_blank" class="instagram-icon-link">
             <i class="bi bi-instagram social-icon"></i>
         </a>
     </div>

@@ -63,10 +63,10 @@ async function handleSubmit() {
 </script>
 
 <template>
-<div class="container pt-1 pb-4">   
+<div class="container pt-1 pb-4 page-section" id="acompanamiento">   
     <div class="row">
         <div class="col-11 col-md-11 col-lg-4 mx-auto my-4">
-            <h2 class="py-3 form-title" id="acompanamiento">¡ÚNETE A NOSOTR@S!</h2>
+            <h2 class="py-3 form-title">¡ÚNETE A NOSOTR@S!</h2>
             <p class="form-text">Somos una organización sin fines de lucro
                 que busca ayudar de forma integral a adultos y 
                 adultas mayores, entregando asistencia psicosocial,

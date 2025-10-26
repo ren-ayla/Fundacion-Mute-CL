@@ -21,24 +21,40 @@ const router = createRouter({
       props: true 
     }
   ],
-    scrollBehavior(to, from, savedPosition) {
-    // Si el usuario usa los botones de atrás/adelante del navegador, vuelve a la posición guardada
-      if (savedPosition) {
-      return savedPosition;
+scrollBehavior(to, from, savedPosition) {
+  if (savedPosition) {
+    return savedPosition;
+  }
+
+  if (to.hash) {
+    const screenWidth = window.innerWidth;
+    
+    // Define tus breakpoints (puedes usar los de Bootstrap)
+    const mobileBreakpoint = 768; // Fin de 'sm' (inicio de 'md')
+    const tabletBreakpoint = 1400; // Fin de 'md' (inicio de 'lg') 
+    
+    // Elige el offset según el tamaño
+    let offset;
+    if (screenWidth < mobileBreakpoint) {
+      // Móvil
+      offset = 450; // <-- Ajusta para móvil
+    } else if (screenWidth < tabletBreakpoint) {
+      // Tablet (entre 768px y 1400px)
+      offset = 455; // <-- Ajusta para tablet
+    } else {
+      // Escritorio (992px o más)
+      offset = 120; // <-- Tu valor para escritorio
     }
 
-    // Si la ruta tiene un "hash" (ej: /#sobre-nosotros), desplázate a ese elemento
-    if (to.hash) {
-      return {
-        el: to.hash,      // El selector del elemento (ej: '#sobre-nosotros')
-        behavior: 'smooth', // Habilita el scroll suave y animado
-        top: 80,          // Opcional: un offset para que el navbar no tape el título
-      };
-    }
+    return {
+      el: to.hash,
+      behavior: 'smooth',
+      top: offset, // <-- Usa el offset calculado
+    };
+  }
 
-    // Si no, simplemente vuelve al inicio de la página
-      return { top: 0, behavior: 'smooth' };
-  },
+  return { top: 0, behavior: 'smooth' };
+},
 })
 
 export default router

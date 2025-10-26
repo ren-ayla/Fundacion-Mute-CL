@@ -1,43 +1,7 @@
 <script setup>
-import { onMounted, onUnmounted } from 'vue'; // Importa onMounted y onUnmounted
-import { setActiveSection } from '../store/navigationStore'; // Importa la función del store
 import CarouselNewsItem from '@/components/CarouselNewsItem.vue';
 import CarouselInstagramItem from '../components/CarouselInstagramItem.vue';
 import CarouselItem from '@/components/CarouselItem.vue';
-
-let observer;
-
-// onMounted se ejecuta cuando el componente está listo en la página
-onMounted(() => {
-  // Opciones para el observador. El 'rootMargin' hace que la sección se active un poco antes de llegar al borde superior,
-  // lo que da una sensación más natural.
-    const options = {
-    rootMargin: "-30% 0px -70% 0px",
-    };
-
-  // El observador se crea con una función "callback" que se ejecuta cada vez que una sección entra o sale del área visible.
-    observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-        // Si la sección está visible, actualizamos el store con su ID.
-        setActiveSection(entry.target.id);
-        }
-    });
-    }, options);
-
-  // Le decimos al observador qué elementos debe vigilar.
-  // En este caso, todas las secciones que tengan un ID.
-    const sections = document.querySelectorAll('section[id]');
-    sections.forEach((section) => observer.observe(section));
-});
-
-// onUnmounted se ejecuta antes de que el componente se destruya. Es una buena práctica "limpiar" el observador.
-onUnmounted(() => {
-    if (observer) {
-    observer.disconnect();
-    }
-    setActiveSection(''); // Limpia la sección activa al salir de la página
-});
 </script>
 
 <template>
@@ -45,7 +9,7 @@ onUnmounted(() => {
 
     <CarouselItem/>    
     
-    <section id="sobre-nosotros">
+    <section id="sobre-nosotros" class="page-section">
         <div class="container text-center mt-5 mb-4">
             <div class="row">
                 <div class="col-1">
@@ -94,7 +58,7 @@ onUnmounted(() => {
         <CarouselNewsItem/>
     </section>
 
-    <section class="carousel-instagram-section" id="nuestro-trabajo">
+    <section class="carousel-instagram-section page-section" id="nuestro-trabajo">
         <div>
             <h1 id="main-title">Nuestro Trabajo</h1>
         </div>

@@ -1,15 +1,14 @@
 <script setup>
-// Importamos los componentes de Vue Router
+// --- Componentes ---
 import NavbarItem from './components/NavbarItem.vue';
 import FooterItem from './components/FooterItem.vue';
 import FormItem from './components/FormItem.vue';
 import { RouterView } from 'vue-router'
+
 </script>
 
 <template>
-  <header id="inicio">
-    <NavbarItem></NavbarItem>
-  </header>
+  <NavbarItem></NavbarItem>
 
   <RouterView />
 
@@ -23,6 +22,7 @@ import { RouterView } from 'vue-router'
 html {
   scroll-behavior: smooth;
 }
+
 * {
     margin: 0;
     padding: 0;
@@ -36,18 +36,7 @@ html {
 .nav-item {
     list-style: none;
 }
-#navbar {
-    background-color: #f6f1f4;
-    font-family: "Roboto", sans-serif;
-    font-size: 1.1rem;
-    font-weight: 400;
-    color: #333333;
-}
-.nav-link:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
+
 a{
     text-decoration: none;
 }
