@@ -1,66 +1,73 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-// import { activeSection } from '../store/navigationStore'; // <--- Eliminado
+import { ref, onMounted, onUnmounted } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import logoSrc from '@/assets/img/logos/mute-logo.webp';
-import { Collapse } from 'bootstrap'; // <--- Importa Collapse
+import { Collapse } from 'bootstrap';
 
 const navItems = ref([
-    { name: 'INICIO', path: '/' }, // <--- Cambiado a '/' simple
+    { name: 'INICIO', path: '/' },
     { name: 'SOBRE NOSOTROS', path: '/#sobre-nosotros' },
     { name: 'NUESTRO TRABAJO', path: '/#nuestro-trabajo' },
     { name: 'BLOG', path: '/blog' },
     { name: 'SOLICITAR ACOMPAÑAMIENTO', path: '/#acompanamiento' },
     { name: 'CONTACTO', path: '/#contacto' },
-    { name: 'HAZ TU APORTE', isButton: true }
+    { name: 'HAZ TU APORTE', isButton: true, path: 'https://pay.virtualpos.cl/fundacion-mute' }
 ]);
-
-function handleDonation() {
-    // console.log('Iniciando proceso de donación...'); // <--- Eliminado
-    alert('¡Muchas gracias por tu interés en ayudar! Serás redirigido a la página de donaciones.');
-}
 
 const route = useRoute();
 
-// FUNCION SIMPLIFICADA PARA DETERMINAR EL ENLACE ACTIVO
 function isLinkActive(item) {
-    // console.log(...); // <--- Eliminado
-
-    // Caso 1: Rutas de página exactas (ej: /blog)
-    // Usamos route.path === item.path para una coincidencia exacta.
-    if (item.path && !item.path.includes('#') && route.path === item.path) {
-        return true;
-    }
-    
-    // Caso 2: Lógica específica para el link "INICIO" (path: '/')
-    // Se activa solo si estamos exactamente en la página de inicio.
-    if (item.path === '/') {
-        return route.path === '/';
-    }
-    
-    // Para los links con hash (#), ya no se activarán por scroll,
-    // solo por la lógica del router (que ya tienes configurada).
+    if (item.path && !item.path.includes('#') && route.path === item.path) return true;
+    if (item.path === '/') return route.path === '/';
     return false;
 }
 
-// Colapsar menu hamburguesa
+// --- Lógica para el menú colapsable ---
 const collapseElementRef = ref(null);
-let bsCollapseInstance = null; // Guardará la instancia de Bootstrap
+const togglerButtonRef = ref(null);
+let bsCollapseInstance = null; // Mantenemos nuestra instancia manual
 
-// [NUEVO] Inicializa la instancia de Bootstrap cuando el componente se monta
 onMounted(() => {
   if (collapseElementRef.value) {
     bsCollapseInstance = new Collapse(collapseElementRef.value, {
-      toggle: false // Importante: no queremos que se abra/cierre al inicializar
+      // MUY IMPORTANTE: toggle: false para que no se abra solo al inicio
+      toggle: false
     });
+  }
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+  if (bsCollapseInstance) {
+    bsCollapseInstance.dispose();
   }
 });
 
-// Función para cerrar el menú si está abierto
+// Función para cerrar (usa nuestra instancia) - Sin cambios
 function closeNavbarCollapse() {
-  // Verifica si la instancia existe y si el menú está visible (tiene la clase 'show')
-  if (bsCollapseInstance && collapseElementRef.value.classList.contains('show')) {
+  if (bsCollapseInstance && collapseElementRef.value && collapseElementRef.value.classList.contains('show')) {
     bsCollapseInstance.hide();
+  }
+}
+
+// Función para clics afuera (usa closeNavbarCollapse) - Sin cambios
+function handleClickOutside(event) {
+  const isTogglerClick = togglerButtonRef.value && (togglerButtonRef.value === event.target || togglerButtonRef.value.contains(event.target));
+  const isMenuOpen = collapseElementRef.value && collapseElementRef.value.classList.contains('show');
+
+  if (isMenuOpen && !isTogglerClick && !collapseElementRef.value.contains(event.target)) {
+    closeNavbarCollapse();
+  }
+}
+
+// Función para el clic EN el botón: Ahora SOLO usa toggle()
+function handleTogglerClick() {
+  if (bsCollapseInstance) {
+    // Le decimos a nuestra instancia que haga toggle (abrir/cerrar)
+    bsCollapseInstance.toggle();
+  } else {
+    console.warn("Instancia de Collapse no encontrada para hacer toggle.");
   }
 }
 
@@ -72,31 +79,34 @@ function closeNavbarCollapse() {
             <RouterLink class="navbar-brand py-2" to="/">
                 <img :src="logoSrc" alt="Logo Fundación Mute" width="220" height="75.20">
             </RouterLink>
+
             <button
+                ref="togglerButtonRef"
                 class="navbar-toggler"
                 type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                aria-expanded="false"  aria-label="Toggle navigation"
+                @click="handleTogglerClick"> <span class="navbar-toggler-icon"></span>
             </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent" ref="collapseElementRef">
+             <div class="collapse navbar-collapse" id="navbarSupportedContent" ref="collapseElementRef">
                 <ul class="navbar-nav justify-content-around w-100 align-items-center">
                     <li v-for="item in navItems" :key="item.name" class="nav-item">
-                        <RouterLink 
-                            v-if="!item.isButton" 
-                            class="nav-link py-1" 
+                        <RouterLink
+                            v-if="!item.isButton"
+                            class="nav-link py-1"
                             :to="item.path"
-                            :class="{ active: isLinkActive(item) }" 
+                            :class="{ active: isLinkActive(item) }"
                             exact-active-class=""
                             @click="closeNavbarCollapse"> {{ item.name }}
                         </RouterLink>
-                        <button v-else class="btn-donar text-light" type="button" @click="handleDonation(); closeNavbarCollapse()">
-                            {{ item.name }}
-                        </button>
+                        <a v-else
+                          :href="item.path"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="btn-donar text-light"
+                          role="button"
+                          @click="closeNavbarCollapse"> {{ item.name }}
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -105,12 +115,12 @@ function closeNavbarCollapse() {
 </template>
 
 <style scoped>
-/* Tus estilos están perfectos, no necesitan cambios */
+/* Tus estilos SIN CAMBIOS */
 :deep(.nav-link.active) {
     font-weight: bold;
-    color: #1d1d1d !important; 
+    color: #1d1d1d !important;
 }
-
+/* ... (resto de tus estilos igual) ... */
 #navbar{
     background-color: #f6f1f4;
     font-family: "Roboto", sans-serif;
@@ -128,16 +138,10 @@ function closeNavbarCollapse() {
 
 @media (max-width: 1399.98px) {
     :deep(#navbarSupportedContent .nav-item) {
-
-    margin: 0.25rem 0 0.25rem 0;
-
-    /* Opcional: Centrar el texto si se desalinea en móvil */
-    /* text-align: center; */
+        margin: 0.25rem 0 0.25rem 0;
     }
-
-  /* Opcional: Eliminar el margen del último item para que no quede espacio extra abajo */
     :deep(#navbarSupportedContent .nav-item:last-child) {
-    margin: 0.5rem 0 0.9rem 0;
+        margin: 0.5rem 0 0.9rem 0;
     }
 }
 
@@ -147,7 +151,7 @@ function closeNavbarCollapse() {
     color: white;
     padding: 0.8rem 1.2rem;
     text-align: center;
-    text-decoration: none;  
+    text-decoration: none;
     display: inline-block;
     font-size: 1.1rem;
     border-radius: 1.5rem;
@@ -158,8 +162,8 @@ function closeNavbarCollapse() {
 }
 
 .btn-donar:hover {
-    background: linear-gradient(to right, #B999DE, #ADC4FF); 
-    box-shadow: 0 0 10px rgba(174, 133, 206, 0.6); 
+    background: linear-gradient(to right, #B999DE, #ADC4FF);
+    box-shadow: 0 0 10px rgba(174, 133, 206, 0.6);
     transform: translateY(-2px);
 }
 </style>

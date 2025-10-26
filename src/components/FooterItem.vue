@@ -34,7 +34,7 @@ const getImageUrl = (name) => {
     </div>
 
     <div class="row">
-        <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-5">
+        <div class="col-md-2 col-lg-3 col-xl-3 mx-auto mb-5">
             <router-link to="/">
                 <img :src="getImageUrl('mute-logo.webp')" alt="Hazte Socio - Fundación Mute" class="img-fluid">
             </router-link>
@@ -61,9 +61,20 @@ const getImageUrl = (name) => {
             </ul>
         </div>
 
-        <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4 text-center text-md-end">
-            <h6 class="text-uppercase fw-bold invisible d-none d-md-block">Navegación</h6>
-            <a class="footer-link" href="#inicio"><u>Volver hacia arriba</u></a>
+        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4 text-center">
+            <img 
+                src="/virtualpos-logo.png" 
+                alt="Logo VirtualPOS" 
+                class="img-fluid mb-2 d-block mx-auto logo-virtualpos" 
+                style="max-width: 120px; height: auto;"
+            id="virtualpos">
+
+            <img 
+                src="/qr-pago.png" 
+                alt="Código QR para donar" 
+                class="img-fluid mt-2 d-block mx-auto"
+                style="height: auto;"
+                id="qr">
         </div>
     </div>
 
@@ -107,10 +118,50 @@ h6{
     transform: scale(1.1);
 }
 
+/*Arreglos para que el email en contacto no se salga de la columna y la imagen del QR por tamaño*/
+@media (max-width: 767.98px){
+    #qr{
+        max-width: 220px;
+    }
+}
+
+#virtualpos{
+    /* x=5px, y=5px, desenfoque=4px, color=negro al 50% */
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.65));
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  /* Seleccionamos específicamente la columna de Contacto (la penúltima col-md-*) */
+  .row > div:nth-last-child(2) .footer-link span {
+    overflow-wrap: break-word; /* Permite romper palabras largas como emails */
+    word-break: break-all;     /* Opción más agresiva si break-word no es suficiente */
+    /* hyphens: auto; */       /* Podría ayudar con palabras normales, menos útil aquí */
+    display: inline-block;     /* Asegura que el span respete el ancho */
+    max-width: 100%;           /* Limita el ancho al contenedor */
+    text-align: left;          /* Mantenemos la alineación izquierda que tenías con justify-content-md-start */
+  }
+
+  /* Si el ícono y el texto no se alinean bien verticalmente con el texto roto */
+  .row > div:nth-last-child(2) .footer-link {
+     align-items: flex-start !important; /* Alinea el ícono arriba con la primera línea del texto */
+  }
+
+  #qr{
+    max-width: 185px;
+  }
+}
+
+@media (min-width: 992px){
+    #qr{
+        max-width: 220px;
+    }
+}
+
 /* Alineación del texto en la columna de contacto en móviles */
 @media (max-width: 767px) {
     .justify-content-md-start {
     justify-content: center !important;
     }
 }
+
 </style>

@@ -53,7 +53,7 @@ scrollBehavior(to, from, savedPosition) {
     };
   }
 
-  return { top: 0, behavior: 'smooth' };
+  return { top: 0, behavior: 'instant' };
 },
 })
 

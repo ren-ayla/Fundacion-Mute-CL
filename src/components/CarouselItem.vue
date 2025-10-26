@@ -15,15 +15,15 @@
         imgName: 'carousel_2.webp',
         alt: 'Adulta mayor con mirada pensativa',
         titleHtml: 'LOS ADULTOS MAYORES TIENEN VOZ Y MERECEN SER ESCUCHADOS, <br/><span class="mute-text-carousel3">VIVIR CON DIGNIDAD, SIN TEMOR A LA SOLEDAD, A LA POBREZA O LA EXCLUSIÓN.</span>',
-        buttonText: 'LEER MÁS',
-        link: '/blog'
+        buttonText: 'VER MÁS',
+        link: '/#nuestro-trabajo'
     },
     {
         imgName: 'carousel_3.webp',
         alt: 'Adulto mayor dando la espalda caminando hacia el horizonte',
-        titleHtml: 'LA ADULTEZ MAYOR MERECE RESPETO Y LA POSIBILIDAD DE VIVIR UNA VEJEZ SALUDABLE.<br><br><span class="mute-text-carousel2">TU APORTE NOS PERMITE SEGUIR AYUDANDO.</span>',
-        buttonText: 'CONOCER MÁS',
-        link: '/#nuestro-trabajo'
+        titleHtml: 'LA ADULTEZ MAYOR MERECE RESPETO Y LA POSIBILIDAD DE VIVIR UNA VEJEZ SALUDABLE.',
+        buttonText: 'CÓMO ENCONTRARNOS',
+        link: '/#contacto'
     },
     {
         imgName: 'carousel_4.webp',
@@ -36,8 +36,8 @@
         imgName: 'carousel_5.webp',
         alt: 'Adulto mayor sosteniendo su cara con sus manos',
         titleHtml: '<span class="mute-text-carousel2">¡BASTA DE SILENCIAR A LOS ADULTOS MAYORES!</span> ES HORA DE ESCUCHAR SU VOZ, SUS HISTORIAS, NECESIDADES Y SUEÑOS.',
-        buttonText: 'CÓMO AYUDAR',
-        link: '/#contacto'
+        buttonText: 'INSCRÍBETE',
+        link: '/#acompanamiento'
     }
     ]);
 
